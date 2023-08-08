@@ -1,0 +1,50 @@
+class SistemaBancario:
+    def __init__(self):
+        self.saldo = 0
+        self.depositos = []
+        self.saques = []
+        self.saques_diarios = 0
+
+    def depositar(self, valor):
+        if valor > 0:
+            self.saldo += valor
+            self.depositos.append(valor)
+            return True
+        else:
+            return False
+
+    def sacar(self, valor):
+        if self.saques_diarios < 3 and valor <= 500 and self.saldo >= valor:
+            self.saldo -= valor
+            self.saques.append(valor)
+            self.saques_diarios += 1
+            return True
+        else:
+            return False
+
+    def extrato(self):
+        if len(self.depositos) == 0 and len(self.saques) == 0:
+            return "Não foram realizadas movimentações."
+        else:
+            extrato = "Extrato:\n"
+            for deposito in self.depositos:
+                extrato += f"Depósito: R$ {deposito:.2f}\n"
+            for saque in self.saques:
+                extrato += f"Saque: R$ {saque:.2f}\n"
+            extrato += f"Saldo atual: R$ {self.saldo:.2f}"
+            return extrato
+
+
+if __name__ == "__main__":
+    banco = SistemaBancario()
+
+    # Teste das operações
+    print(banco.depositar(1000))  # Depositar R$ 1000.00
+    print(banco.depositar(-500))  # Tentativa inválida de depósito
+    print(banco.sacar(300))      # Sacar R$ 300.00
+    print(banco.sacar(700))      # Tentativa inválida de saque (valor maior que o saldo)
+    print(banco.sacar(200))      # Sacar R$ 200.00
+    print(banco.sacar(100))      # Sacar R$ 100.00 (3º saque do dia)
+    print(banco.sacar(50))       # Tentativa inválida de saque (limite diário de saques atingido)
+    print(banco.extrato())       # Exibir extrato
+
